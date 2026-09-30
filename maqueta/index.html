@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoices Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Íconos (Material Icons, SVG inline para funcionar sin conexión) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></symbol>
+  <symbol id="i-report" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></symbol>
+  <symbol id="i-compare" viewBox="0 0 24 24"><path d="M9.01 14H2v2h7.01v3L13 15l-3.99-4v3zm5.98-1v-3H22V8h-7.01V5L11 9l3.99 4z"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></symbol>
+  <symbol id="i-sheet" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-3h3v3zm0-5H5v-3h3v3zm0-5H5V6h3v3zm11 10h-9v-3h9v3zm0-5h-9v-3h9v3zm0-5h-9V6h9v3z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></symbol>
+  <symbol id="i-notfound" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM7 9h5v1H7z"/></symbol>
+  <symbol id="i-dup" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></symbol>
+  <symbol id="i-error" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></symbol>
+  <symbol id="i-diff" viewBox="0 0 24 24"><path d="M10 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h5v2h2V1h-2v2zm0 15H5l5-6v6zm9-15h-5v2h5v13l-5-6v9h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7v10c0 2.21 3.59 4 8 4s8-1.79 8-4V7c0-2.21-3.58-4-8-4zm6 14c0 .5-2.13 2-6 2s-6-1.5-6-2v-2.23c1.61.78 3.72 1.23 6 1.23s4.39-.45 6-1.23V17zm0-4.55c-1.3.95-3.58 1.55-6 1.55s-4.7-.6-6-1.55V9.64c1.47.83 3.61 1.36 6 1.36s4.53-.53 6-1.36v2.81zM12 9C8.13 9 6 7.5 6 7s2.13-2 6-2 6 1.5 6 2-2.13 2-6 2z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></symbol>
+  <symbol id="i-filter-off" viewBox="0 0 24 24"><path d="M19.79 5.61C20.3 4.95 19.83 4 19 4H6.83l7.97 7.97 4.99-6.36zM2.81 2.81 1.39 4.22 10 13v6c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-2.17l5.78 5.78 1.41-1.41L2.81 2.81z"/></symbol>
+</svg>
+
+<div class="app">
+  <nav class="tabs"><div class="tab">Invoices Archive</div></nav>
+
+  <main class="panel">
+    <h1>INVOICES ARCHIVE</h1>
+
+    <div class="toolbar">
+      <div class="date-filter">
+        <svg class="icon"><use href="#i-calendar"/></svg>
+        <button class="outlined" id="dateField" type="button" aria-haspopup="dialog" aria-expanded="false">
+          <span class="legend">Date Range (Max 3 months)</span>
+          <span id="dateLabel">—</span>
+        </button>
+        <div class="date-popover" id="datePopover" hidden role="dialog" aria-label="Seleccionar rango de fechas">
+          <div class="row">
+            <label>Fecha inicial<input type="date" id="dateStart"></label>
+            <label>Fecha final<input type="date" id="dateEnd"></label>
+          </div>
+          <div class="presets">
+            <button class="chip-btn" data-preset="month" type="button">Mes actual</button>
+            <button class="chip-btn" data-preset="30" type="button">Últimos 30 días</button>
+            <button class="chip-btn" data-preset="90" type="button">Últimos 3 meses</button>
+          </div>
+          <div class="hint" id="dateHint">Filtra por fecha de emisión (Issue Date).</div>
+          <div class="actions">
+            <button class="btn btn-text" id="dateCancel" type="button">Cancelar</button>
+            <button class="btn btn-text" id="dateApply" type="button">Aplicar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <button class="btn btn-outline" id="btnCross" type="button" title="Reconcile PL Colab invoices against Project Agenda">
+        <svg class="icon"><use href="#i-compare"/></svg>Reconcile
+      </button>
+      <button class="btn btn-primary" id="btnReport" type="button">
+        <svg class="icon"><use href="#i-report"/></svg>Report
+      </button>
+    </div>
+
+
+    <section class="table-card">
+      <div class="table-scroll" id="tableScroll">
+        <table class="grid" id="mainTable">
+          <colgroup>
+            <col class="c-type"><col class="c-sup"><col class="c-id"><col class="c-iss"><col class="c-due">
+            <col class="c-amt"><col class="c-oc"><col class="c-sap"><col class="c-acc"><col class="c-cross" id="colCross"><col class="c-act">
+          </colgroup>
+          <thead><tr id="headRow"></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty-state" id="emptyState" hidden>No hay facturas para el rango y filtros seleccionados.</div>
+      </div>
+      <div class="table-footer">
+        <span id="rowCount"></span>
+        <button class="btn btn-text" id="clearFilters" type="button" hidden>
+          <svg class="icon sm"><use href="#i-filter-off"/></svg>Limpiar filtros
+        </button>
+        <span class="spacer"></span>
+        <span id="sourceNote"></span>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Menú de acciones por fila -->
+<div class="menu" id="rowMenu" hidden role="menu"></div>
+
+<!-- Modal: cruce (carga / configuración / procesamiento) -->
+<div class="backdrop" id="crossBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="crossTitle" id="crossModal">
+    <div class="modal-header">
+      <svg class="icon lg" style="color:var(--primary)"><use href="#i-compare"/></svg>
+      <div>
+        <h2 id="crossTitle">Reconcile</h2>
+        <div class="sub">PL Colab vs. Project Agenda</div>
+      </div>
+      <div class="spacer"></div>
+      <button class="icon-btn" data-close="cross" aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="modal-body" id="crossBody"></div>
+    <div class="modal-footer" id="crossFooter"></div>
+  </div>
+</div>
+
+<!-- Modal: resultado del cruce (PL Colab & Project Agenda Invoice Reconciliation) -->
+<div class="backdrop" id="resultBackdrop" hidden>
+  <div class="modal rec-modal" role="dialog" aria-modal="true" aria-labelledby="recTitle">
+    <div class="rec-header">
+      <button class="rec-close" data-close="result" aria-label="Close" title="Close"><svg class="icon"><use href="#i-close"/></svg></button>
+      <h2 id="recTitle">PL Colab &amp; Project Agenda Invoice Reconciliation</h2>
+      <span class="spacer"></span>
+      <button class="btn btn-primary" id="recExport" type="button"><svg class="icon sm"><use href="#i-download"/></svg>Export to Excel</button>
+    </div>
+    <dl class="rec-counts" id="recCounts"></dl>
+    <div class="rec-table-wrap">
+      <table class="rec-table">
+        <thead><tr><th>Consecutive</th><th>Supplier</th><th>Issue Date</th></tr></thead>
+        <tbody id="recTbody"></tbody>
+      </table>
+    </div>
+    <div class="rec-note" id="recNote"></div>
+  </div>
+</div>
+
+
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script src="lib/xlsx.full.min.js"></script>
+<script>
+  // Respaldo: si la librería local no cargó, usar CDN.
+  if (!window.XLSX) document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
+</script>
+<script src="js/data-software.js"></script>
+<script src="js/crossmatch.js"></script>
+<script src="js/app.js"></script>
+<script src="js/cross-ui.js"></script>
+</body>
+</html>
