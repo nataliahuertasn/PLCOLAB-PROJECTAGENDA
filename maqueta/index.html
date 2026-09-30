@@ -51,22 +51,6 @@
           <span class="legend">Date Range (Max 3 months)</span>
           <span id="dateLabel">—</span>
         </button>
-        <div class="date-popover" id="datePopover" hidden role="dialog" aria-label="Seleccionar rango de fechas">
-          <div class="row">
-            <label>Fecha inicial<input type="date" id="dateStart"></label>
-            <label>Fecha final<input type="date" id="dateEnd"></label>
-          </div>
-          <div class="presets">
-            <button class="chip-btn" data-preset="month" type="button">Mes actual</button>
-            <button class="chip-btn" data-preset="30" type="button">Últimos 30 días</button>
-            <button class="chip-btn" data-preset="90" type="button">Últimos 3 meses</button>
-          </div>
-          <div class="hint" id="dateHint">Filtra por fecha de emisión (Issue Date).</div>
-          <div class="actions">
-            <button class="btn btn-text" id="dateCancel" type="button">Cancelar</button>
-            <button class="btn btn-text" id="dateApply" type="button">Aplicar</button>
-          </div>
-        </div>
       </div>
 
       <div class="spacer"></div>
@@ -154,6 +138,7 @@
 </script>
 <script src="js/data-software.js"></script>
 <script src="js/crossmatch.js"></script>
+<script src="js/range-picker.js"></script>
 <script src="js/app.js"></script>
 <script src="js/cross-ui.js"></script>
 </body>

@@ -10,10 +10,10 @@ Para probar el flujo completo:
 1. (Opcional) Cambie el **Date Range**, por ejemplo `2026-09-01 ~ 2026-09-20`.
 2. Clic en **Reconcile**.
 3. Cargue el reporte de **PL Colab** (solo .xlsx). **Debe tener una columna llamada `Nro. Documento`**; si no la tiene, no se puede cruzar.
-4. Clic en **Continue**: el cruce se ejecuta y se abre el reporte directamente.
+4. En **Select period to reconcile** elija el rango de **Issue Date** de Project Agenda (se sugiere automáticamente con las fechas de emisión del archivo; máximo 3 meses) y haga clic en **Continue**: el cruce se ejecuta y se abre el reporte.
 5. Se abre **PL Colab & Project Agenda Invoice Reconciliation**: total de facturas de cada fuente y la tabla (Consecutive, Supplier, Issue Date) con las facturas de PL Colab no encontradas en Project Agenda. **Export to Excel** descarga exactamente esa vista con todas las filas.
 
-> PL Colab = reporte externo cargado (se analiza completo). Project Agenda = facturas del software en el Date Range seleccionado. Los registros duplicados se listan cada vez que aparecen.
+> PL Colab = reporte externo cargado (se analiza completo). Project Agenda = facturas del software con Issue Date en el período elegido en el cruce. Los registros duplicados se listan cada vez que aparecen.
 
 ## Estructura
 

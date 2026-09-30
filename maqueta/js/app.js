@@ -254,50 +254,18 @@
   });
   $('#tableScroll').addEventListener('scroll', () => { menu.hidden = true; });
 
-  // ---------- Rango de fechas ----------
-  const pop = $('#datePopover'), field = $('#dateField');
-  function openDate() {
-    $('#dateStart').value = state.range.start;
-    $('#dateEnd').value = state.range.end;
-    validateDates();
-    pop.hidden = false; field.classList.add('open'); field.setAttribute('aria-expanded', 'true');
-    $('#dateStart').focus();
-  }
-  function closeDate() { pop.hidden = true; field.classList.remove('open'); field.setAttribute('aria-expanded', 'false'); }
-  function validateDates() {
-    const s = $('#dateStart').value, e = $('#dateEnd').value, hint = $('#dateHint');
-    let msg = '', ok = true;
-    if (!s || !e) { ok = false; msg = 'Seleccione fecha inicial y final.'; }
-    else if (s > e) { ok = false; msg = 'La fecha inicial debe ser anterior a la final.'; }
-    else if (e > addMonths(s, 3)) { ok = false; msg = 'El rango máximo es de 3 meses.'; }
-    else {
-      const n = records.filter(r => r.issueDate >= s && r.issueDate <= e).length;
-      msg = `${n.toLocaleString('es-CO')} facturas con fecha de emisión en este rango.`;
-    }
-    hint.textContent = msg; hint.classList.toggle('err', !ok);
-    $('#dateApply').disabled = !ok;
-    return ok;
-  }
-  field.addEventListener('click', () => pop.hidden ? openDate() : closeDate());
-  $('#dateStart').addEventListener('input', validateDates);
-  $('#dateEnd').addEventListener('input', validateDates);
-  $('#dateCancel').addEventListener('click', closeDate);
-  $('#dateApply').addEventListener('click', () => {
-    if (!validateDates()) return;
-    state.range = { start: $('#dateStart').value, end: $('#dateEnd').value };
-    closeDate(); renderDateLabel(); renderBody();
-    global.CrossUI && global.CrossUI.onRangeChange(state.range);
+  // ---------- Rango de fechas (calendario) ----------
+  const countInRange = (s, e) => records.filter(r => r.issueDate >= s && r.issueDate <= e).length;
+  $('#dateField').addEventListener('click', () => {
+    global.RangePicker.open({
+      anchor: $('#dateField'), start: state.range.start, end: state.range.end, maxMonths: 3, count: countInRange,
+      onApply(range) {
+        state.range = range;
+        renderDateLabel(); renderBody();
+        global.CrossUI && global.CrossUI.onRangeChange(state.range);
+      }
+    });
   });
-  pop.addEventListener('click', e => {
-    const p = e.target.closest('[data-preset]'); if (!p) return;
-    const end = state.range.end || iso(new Date());
-    let start;
-    if (p.dataset.preset === 'month') start = end.slice(0, 8) + '01';
-    else if (p.dataset.preset === '30') { const d = parseIso(end); d.setDate(d.getDate() - 30); start = iso(d); }
-    else start = addMonths(end, -3);
-    $('#dateStart').value = start; $('#dateEnd').value = end; validateDates();
-  });
-  document.addEventListener('click', e => { if (!pop.hidden && !e.target.closest('.date-filter')) closeDate(); });
 
   // ---------- REPORT (funcionalidad existente: exporta el reporte del período) ----------
   $('#btnReport').addEventListener('click', () => {
@@ -325,6 +293,8 @@
     esc, icon, toast, statusChip,
     getAllRecords: () => records,
     getPeriodRecords,
+    getRecordsInRange: (s, e) => records.filter(r => r.issueDate >= s && r.issueDate <= e),
+    countInRange,
     getRange: () => ({ ...state.range }),
     setCross(status, meta) {
       state.cross = { status, meta };

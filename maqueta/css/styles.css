@@ -521,3 +521,42 @@ table.rec-table { width: 100%; border-collapse: separate; border-spacing: 0; fon
   .rec-counts { grid-template-columns: 1fr; }
   .rec-header { flex-wrap: wrap; }
 }
+
+/* ---------- RangePicker (calendario de rango) ---------- */
+.rp {
+  position: fixed; z-index: 90; width: 300px;
+  background: var(--surface); border-radius: 6px; box-shadow: var(--shadow-modal);
+  overflow: hidden; user-select: none;
+}
+.rp-head { background: var(--primary); color: #fff; padding: 14px 20px 12px; }
+.rp-year { font-size: 13px; font-weight: 500; opacity: .75; }
+.rp-title { font-size: 24px; font-weight: 500; line-height: 1.25; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 6px; }
+.rp-month { font-size: 14px; font-weight: 700; }
+.rp-arrow {
+  width: 32px; height: 32px; border-radius: 50%; border: 0; background: none; cursor: pointer;
+  font-size: 22px; line-height: 1; color: var(--text-2);
+}
+.rp-arrow:hover { background: rgba(0,0,0,.06); }
+.rp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; padding: 0 12px; }
+.rp-wd { margin-bottom: 4px; }
+.rp-wd span { background: #eeeeee; color: var(--text-2); font-size: 11.5px; font-weight: 500; text-align: center; padding: 5px 0; }
+.rp-day {
+  width: 34px; height: 34px; margin: 0 auto; border-radius: 50%; border: 0; background: none;
+  font: inherit; font-size: 12.5px; font-weight: 500; color: var(--text); cursor: pointer;
+}
+.rp-day:hover { background: var(--primary-soft); }
+.rp-day.today { box-shadow: inset 0 0 0 1px var(--primary); }
+.rp-day.in { background: #5c9ce0; color: #fff; }
+.rp-day.edge { background: var(--primary); color: #fff; font-weight: 700; }
+.rp-hint { font-size: 11.5px; color: var(--text-2); padding: 8px 20px 0; min-height: 16px; }
+.rp-hint.err { color: var(--error); }
+.rp-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 8px 12px 10px; }
+.rp-actions .btn:disabled { opacity: .4; }
+
+/* Campo "Select period to reconcile" dentro del modal */
+.period-block { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--divider); }
+.period-block .date-filter { flex-wrap: wrap; }
+.period-block .outlined { min-width: 250px; }
+.modal .outlined .legend { background: var(--surface); }
+.period-count { font-size: 12px; color: var(--text-2); }
