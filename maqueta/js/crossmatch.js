@@ -85,10 +85,12 @@
   }
 
   // ---------- Detección de encabezados y columnas ----------
+  // Regla fija del cruce: Invoice ID del software ↔ columna "Nro. Documento" del reporte cargado.
+  const INVOICE_HEADER = 'Nro. Documento';
   const HEADER_ALIASES = {
-    invoiceId: ['invoiceid', 'invoice', 'invoiceno', 'invoicenumber', 'factura', 'nofactura', 'numerofactura', 'nrofactura', 'nfactura', 'facturano', 'documento', 'nodocumento', 'numerodocumento', 'folio', 'prefijoynumero', 'consecutivo'],
-    supplier:  ['supplier', 'proveedor', 'nombreproveedor', 'vendor', 'tercero', 'nombretercero', 'razonsocial', 'emisor', 'nombreemisor', 'razonsocialemisor'],
-    amount:    ['invoiceamount', 'amount', 'valor', 'valortotal', 'valorfactura', 'monto', 'total', 'totalfactura', 'importe'],
+    invoiceId: [headerKey(INVOICE_HEADER)],
+    supplier:  ['remitente', 'supplier', 'proveedor', 'nombreproveedor', 'vendor', 'tercero', 'nombretercero', 'razonsocial', 'emisor', 'nombreemisor', 'razonsocialemisor'],
+    amount:    ['totaldocumento', 'invoiceamount', 'amount', 'valor', 'valortotal', 'valorfactura', 'monto', 'total', 'totalfactura', 'importe'],
     issueDate: ['issuedate', 'fechaemision', 'fechadeemision', 'fechafactura', 'fechadocumento', 'fecha', 'date'],
     dueDate:   ['duedate', 'fechavencimiento', 'fechadevencimiento', 'vencimiento'],
     oc:        ['oc', 'ordencompra', 'ordendecompra', 'po', 'purchaseorder', 'pedido', 'nooc'],
@@ -96,8 +98,12 @@
   };
   function headerKey(h) { return stripAccents(String(h || '')).toLowerCase().replace(/[^a-z0-9]/g, ''); }
 
-  /** Busca la fila de encabezados (primeras 25 filas) con más coincidencias de alias. */
+  /** Fila de encabezados: la que contiene "Nro. Documento"; si no existe, la de más coincidencias de alias. */
   function detectHeaderRow(rows) {
+    const inv = headerKey(INVOICE_HEADER);
+    for (let i = 0; i < Math.min(rows.length, 25); i++) {
+      if ((rows[i] || []).some(c => headerKey(c) === inv)) return i;
+    }
     let best = { index: 0, score: -1 };
     const all = Object.values(HEADER_ALIASES).flat();
     for (let i = 0; i < Math.min(rows.length, 25); i++) {
@@ -118,10 +124,6 @@
         if (i > -1) { map[field] = i; used.add(i); return; }
       }
     });
-    if (map.invoiceId === undefined) {                    // coincidencia parcial para Nº factura
-      const i = keys.findIndex((k, idx) => !used.has(idx) && /(factura|invoice)/.test(k) && !/(fecha|date|valor|amount|monto|total)/.test(k));
-      if (i > -1) { map.invoiceId = i; used.add(i); }
-    }
     if (map.supplier === undefined) {
       const i = keys.findIndex((k, idx) => !used.has(idx) && /(proveedor|supplier|tercero|razonsocial)/.test(k));
       if (i > -1) { map.supplier = i; used.add(i); }
@@ -288,6 +290,6 @@
 
   global.CrossMatch = {
     normalizeInvoice, normalizeSupplier, parseAmount, normalizeDate, normalizeOC,
-    detectHeaderRow, autoMap, headerKey, run, FIELD_LABELS
+    detectHeaderRow, autoMap, headerKey, run, FIELD_LABELS, INVOICE_HEADER
   };
 })(window);

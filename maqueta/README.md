@@ -9,8 +9,8 @@ Abra `index.html` con doble clic (Chrome o Edge). No requiere servidor ni instal
 Para probar el flujo completo:
 1. (Opcional) Cambie el **Date Range**, por ejemplo `2026-09-01 ~ 2026-09-20`.
 2. Clic en **Reconcile**.
-3. Cargue el reporte de **PL Colab** (solo .xlsx); para probar puede usar `data/invoices_history_2026-09-01_to_2026-09-29_.xlsx`.
-4. Revise el análisis y el mapeo de columnas → **Start reconciliation**.
+3. Cargue el reporte de **PL Colab** (solo .xlsx). **Debe tener una columna llamada `Nro. Documento`**; si no la tiene, no se puede cruzar.
+4. Clic en **Continue**: el cruce se ejecuta y se abre el reporte directamente.
 5. Se abre **PL Colab & Project Agenda Invoice Reconciliation**: total de facturas de cada fuente y la tabla (Consecutive, Supplier, Issue Date) con las facturas de PL Colab no encontradas en Project Agenda. **Export to Excel** descarga exactamente esa vista con todas las filas.
 
 > PL Colab = reporte externo cargado (se analiza completo). Project Agenda = facturas del software en el Date Range seleccionado. Los registros duplicados se listan cada vez que aparecen.
@@ -50,12 +50,9 @@ maqueta/
 
 ### Identificador de la factura
 
-- **Invoice ID solo no es único**: 9 números se repiten con proveedores distintos (p. ej. `BE34285`, `C2326365`).
-- Llave elegida: **Proveedor + Nº de factura**, normalizados:
-  - Nº de factura: mayúsculas, sin espacios, guiones ni puntos.
-  - Proveedor: sin tildes, sin puntuación y sin sufijo societario (`TRANSCONT SAS` = `TRANSCONT S.A.S`).
-- Si el reporte externo no tiene columna de proveedor, se cruza solo por Nº de factura.
-- Valor, fecha de emisión y OC **no** forman parte de la llave; se usan para detectar *coincidencias con diferencias*.
+- **Regla fija del cruce:** `Invoice ID` (software / Project Agenda) contra la columna **`Nro. Documento`** del reporte de PL Colab. No se usa el proveedor.
+- Ambos valores se comparan normalizados: mayúsculas, sin espacios, guiones ni puntos (`fe-677` = `FE677`).
+- El reporte (**PL Colab & Project Agenda Invoice Reconciliation**) muestra solo las facturas de PL Colab cuyo `Nro. Documento` **no está** en el software para el período seleccionado.
 
 ### Hallazgos en los datos
 
