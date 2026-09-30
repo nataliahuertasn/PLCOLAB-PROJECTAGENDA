@@ -77,7 +77,18 @@
         <button class="icon-btn" id="removeFile" title="Remove file" aria-label="Remove file">${icon('i-close')}</button>
       </div>`;
     }
-    return `<h3 class="section-title">Upload report to reconcile</h3>
+    return `<div class="period-block">
+        <h3 class="section-title">Select period to reconcile</h3>
+        <p class="section-help">Project Agenda invoices with an <b>Issue Date</b> in this period will be compared against the PL Colab report.</p>
+        <div class="date-filter">
+          ${icon('i-calendar')}
+          <button class="outlined" id="recPeriod" type="button" aria-haspopup="dialog">
+            <span class="legend">Issue Date (Max 3 months)</span>
+            <span>${S.range ? `${S.range.start} ~ ${S.range.end}` : 'Select period'}</span>
+          </button>
+        </div>
+      </div>
+      <h3 class="section-title">Upload report to reconcile</h3>
       <p class="section-help">Select the PL Colab report. Each record will be compared against the Project Agenda invoices.</p>
       <div class="dropzone" id="dropzone">
         ${icon('i-upload')}
@@ -87,35 +98,11 @@
         <div class="formats">Supported format: .xlsx</div>
       </div>
       <div id="fileError"></div>
-      ${fileHtml}
-      <div class="period-block">
-        <h3 class="section-title">Select period to reconcile</h3>
-        <p class="section-help">Project Agenda invoices with an <b>Issue Date</b> in this period will be compared against the PL Colab report.</p>
-        <div class="date-filter">
-          ${icon('i-calendar')}
-          <button class="outlined" id="recPeriod" type="button" aria-haspopup="dialog">
-            <span class="legend">Issue Date (Max 3 months)</span>
-            <span>${S.range ? `${S.range.start} ~ ${S.range.end}` : 'Select period'}</span>
-          </button>
-          ${S.range ? `<span class="period-count"><b>${fmt(global.App.countInRange(S.range.start, S.range.end))}</b> Project Agenda invoices${S.rangeSuggested ? ' · suggested from the PL Colab issue dates' : ''}</span>` : ''}
-        </div>
-      </div>`;
+      ${fileHtml}`;
   }
   function footUpload() {
     return `<button class="btn btn-text" data-close="cross">Cancel</button>
       <button class="btn btn-primary btn-flat" id="toStep2" ${S.file && S.rowsRaw.length && S.map.invoiceId !== undefined && S.range ? '' : 'disabled'}>Continue</button>`;
-  }
-
-  /** Propone el período a partir de las fechas de emisión del archivo de PL Colab (si caben en 3 meses). */
-  function suggestRange() {
-    if (S.map.issueDate === undefined) return;
-    const dates = buildExternal().map(r => r.issueDate).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d || '')).sort();
-    if (!dates.length) return;
-    const start = dates[0], end = dates[dates.length - 1];
-    const [y, m, d] = start.split('-').map(Number);
-    const max = new Date(y, m - 1 + 3, d);
-    const maxIso = max.getFullYear() + '-' + String(max.getMonth() + 1).padStart(2, '0') + '-' + String(max.getDate()).padStart(2, '0');
-    if (end <= maxIso) { S.range = { start, end }; S.rangeSuggested = true; }
   }
   function bindUpload() {
     const input = $('#fileInput'), dz = $('#dropzone');
@@ -133,7 +120,7 @@
     $('#recPeriod').onclick = () => global.RangePicker.open({
       anchor: $('#recPeriod'), start: S.range && S.range.start, end: S.range && S.range.end,
       maxMonths: 3, count: global.App.countInRange,
-      onApply(range) { S.range = range; S.rangeSuggested = false; renderCross(); }
+      onApply(range) { S.range = range; renderCross(); }
     });
   }
 
@@ -153,7 +140,6 @@
         S.wb = XLSX.read(new Uint8Array(reader.result), { type: 'array', cellDates: true });
         S.file = { name: file.name, size: file.size };
         readSheet(S.wb.SheetNames[0]);
-        suggestRange();
         renderCross();
         if (!S.rowsRaw.length) showFileError('The file has no records.');
         else if (S.map.invoiceId === undefined) showFileError('The file does not have a column named "' + CrossMatch.INVOICE_HEADER + '". It is required to reconcile.');
@@ -301,7 +287,7 @@
   function startFlow(reset) {
     if (reset) Object.assign(S, { file: null, wb: null, headers: [], rowsRaw: [], rowsText: [], map: {} });
     S.step = 1;
-    if (!S.range) { S.range = global.App.getRange(); S.rangeSuggested = false; }
+    if (!S.range) { S.range = global.App.getRange(); }
     open('cross');
     renderCross();
   }
