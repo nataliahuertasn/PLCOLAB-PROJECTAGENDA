@@ -130,14 +130,14 @@
       const arrow = sorted ? icon(state.sort.dir === 'asc' ? 'i-arrow-up' : 'i-arrow-down', 'icon sort') : icon('i-arrow-down', 'icon sort');
       const label = c.noSort
         ? `<span class="th-label" style="cursor:default">${c.label}</span>`
-        : `<button type="button" class="th-label ${sorted ? 'sorted' : ''}" data-sort="${c.key}" title="Ordenar por ${c.label}">${c.label}${arrow}</button>`;
+        : `<button type="button" class="th-label ${sorted ? 'sorted' : ''}" data-sort="${c.key}" title="Sort by ${c.label}">${c.label}${arrow}</button>`;
       let filter = '';
       if (c.filter === 'text') {
-        filter = `<input class="th-filter" data-filter="${c.key}" value="${esc(state.filters[c.key] || '')}" placeholder="Filtrar…" aria-label="Filtrar ${c.label}">`;
+        filter = `<input class="th-filter" data-filter="${c.key}" value="${esc(state.filters[c.key] || '')}" placeholder="Filter…" aria-label="Filter ${c.label}">`;
       } else if (c.filter === 'check') {
         const v = state.filters[c.key] || '';
         return `<th class="center"><div class="th-inner" style="align-items:flex-start"><span class="th-select-wrap"><span class="mini">${c.label.toUpperCase()}</span>
-          <select class="th-select" data-filter="${c.key}" aria-label="Filtrar ${c.label}">
+          <select class="th-select" data-filter="${c.key}" aria-label="Filter ${c.label}">
             <option value="" ${v === '' ? 'selected' : ''}>None</option>
             <option value="checked" ${v === 'checked' ? 'selected' : ''}>Checked</option>
             <option value="unchecked" ${v === 'unchecked' ? 'selected' : ''}>Unchecked</option>
@@ -182,8 +182,8 @@
     $('#emptyState').hidden = rows.length > 0;
     const filtered = rows.length !== total;
     $('#rowCount').innerHTML = filtered
-      ? `Mostrando <b>${rows.length.toLocaleString('es-CO')}</b> de ${total.toLocaleString('es-CO')} facturas del período`
-      : `<b>${total.toLocaleString('es-CO')}</b> facturas en el período`;
+      ? `Showing <b>${rows.length.toLocaleString('es-CO')}</b> of ${total.toLocaleString('es-CO')} invoices in the period`
+      : `<b>${total.toLocaleString('es-CO')}</b> invoices in the period`;
     $('#clearFilters').hidden = !Object.values(state.filters).some(Boolean);
   }
 
@@ -220,7 +220,7 @@
     const link = e.target.closest('[data-pdf]');
     if (link) {
       const rec = records[+link.dataset.pdf];
-      toast(rec.pdf ? `Descarga de ${rec.pdf} deshabilitada en la maqueta.` : 'Esta factura no tiene PDF asociado.');
+      toast(rec.pdf ? `Downloading ${rec.pdf} is disabled in this mockup.` : 'This invoice has no PDF attached.');
       return;
     }
     const mb = e.target.closest('[data-menu]');
@@ -231,10 +231,10 @@
   const menu = $('#rowMenu');
   function openRowMenu(rec, anchor) {
     const items = [
-      `<button data-act="pdf">${icon('i-pdf')}Descargar PDF</button>`,
-      `<button data-act="copy">${icon('i-dup')}Copiar Nº de factura</button>`
+      `<button data-act="pdf">${icon('i-pdf')}Download PDF</button>`,
+      `<button data-act="copy">${icon('i-dup')}Copy invoice number</button>`
     ];
-    if (state.cross) items.push(`<button data-act="cross">${icon('i-compare')}Ver resultado del cruce</button>`);
+    if (state.cross) items.push(`<button data-act="cross">${icon('i-compare')}View reconciliation result</button>`);
     menu.innerHTML = items.join('');
     menu.hidden = false;
     const r = anchor.getBoundingClientRect();
@@ -244,8 +244,8 @@
     menu.onclick = ev => {
       const act = ev.target.closest('[data-act]')?.dataset.act;
       menu.hidden = true;
-      if (act === 'pdf') toast(rec.pdf ? `Descarga de ${rec.pdf} deshabilitada en la maqueta.` : 'Esta factura no tiene PDF asociado.');
-      if (act === 'copy') { navigator.clipboard?.writeText(rec.invoiceId || '').catch(() => {}); toast('Nº de factura copiado.'); }
+      if (act === 'pdf') toast(rec.pdf ? `Downloading ${rec.pdf} is disabled in this mockup.` : 'This invoice has no PDF attached.');
+      if (act === 'copy') { navigator.clipboard?.writeText(rec.invoiceId || '').catch(() => {}); toast('Invoice number copied.'); }
       if (act === 'cross') global.CrossUI && global.CrossUI.showResult();
     };
   }
@@ -269,14 +269,14 @@
 
   // ---------- REPORT (funcionalidad existente: exporta el reporte del período) ----------
   $('#btnReport').addEventListener('click', () => {
-    if (!global.XLSX) { toast('No se pudo cargar la librería de Excel.'); return; }
+    if (!global.XLSX) { toast('The Excel library could not be loaded.'); return; }
     const rows = getVisibleRecords();
     const aoa = [['Type', 'Supplier', 'Invoice ID', 'Issue Date', 'Due Date', 'Invoice Amount', 'OC', 'SAP', 'ACCOUNTANT']]
       .concat(rows.map(r => [r.type, r.supplier, r.invoiceId, r.issueDate, r.dueDate, r.amount, r.oc, r.sap, r.acc]));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Invoices History');
     XLSX.writeFile(wb, `invoices_history_${state.range.start}_to_${state.range.end}_.xlsx`);
-    toast(`Reporte generado con ${rows.length.toLocaleString('es-CO')} facturas.`);
+    toast(`Report generated with ${rows.length.toLocaleString('es-CO')} invoices.`);
   });
 
   // ---------- Toast ----------
@@ -309,7 +309,7 @@
     },
     focusRecord(rec) {
       if (rec.issueDate < state.range.start || rec.issueDate > state.range.end) {
-        toast('La factura está fuera del período seleccionado.'); return;
+        toast('The invoice is outside the selected period.'); return;
       }
       state.filters = {}; render();
       const tr = document.querySelector(`#tbody tr[data-id="${rec._id}"]`);
@@ -320,6 +320,6 @@
   // ---------- Inicio ----------
   state.range = defaultRange();
   renderDateLabel();
-  $('#sourceNote').textContent = `Fuente: ${global.SOFTWARE_SOURCE || 'reporte del software'} · ${records.length.toLocaleString('es-CO')} registros`;
+  $('#sourceNote').textContent = `Source: ${global.SOFTWARE_SOURCE || 'software report'} · ${records.length.toLocaleString('es-CO')} records`;
   render();
 })(window);
